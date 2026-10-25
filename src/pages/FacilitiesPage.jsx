@@ -1,78 +1,77 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
 import Card from '../components/ui/Card';
+import { useAuth } from '../hooks/useAuth';
+import { formatErrorMessage } from '../lib/validation';
+import facilitiesService from '../services/facilitiesService';
 
 export default function FacilitiesPage() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [facilities, setFacilities] = useState([]);
+  const [categories, setCategories] = useState(['all']);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [facilities] = useState([
-    {
-      id: 1,
-      name: 'Computer Laboratory A',
-      category: 'Laboratory',
-      capacity: 40,
-      rating: 4.8,
-      reviews: 84,
-      available: true
-    },
-    {
-      id: 2,
-      name: 'Classroom A101',
-      category: 'Classroom',
-      capacity: 50,
-      rating: 4.6,
-      reviews: 62,
-      available: true
-    },
-    {
-      id: 3,
-      name: 'Meeting Room B',
-      category: 'Meeting',
-      capacity: 20,
-      rating: 4.9,
-      reviews: 45,
-      available: true
-    },
-    {
-      id: 4,
-      name: 'Event Hall',
-      category: 'Event',
-      capacity: 200,
-      rating: 4.7,
-      reviews: 28,
-      available: true
-    },
-    {
-      id: 5,
-      name: 'Sports Court',
-      category: 'Sports',
-      capacity: 100,
-      rating: 4.5,
-      reviews: 32,
-      available: true
-    },
-    {
-      id: 6,
-      name: 'Research Lab',
-      category: 'Laboratory',
-      capacity: 30,
-      rating: 4.8,
-      reviews: 21,
-      available: true
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
     }
-  ]);
 
-  const categories = ['all', 'Laboratory', 'Classroom', 'Meeting', 'Event', 'Sports'];
+    const fetchFacilities = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const filteredFacilities = facilities.filter((f) => {
-    const matchesSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || f.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+        const [facilitiesRes, categoriesRes] = await Promise.all([
+          facilitiesService.getAll(1, 100, selectedCategory !== 'all' ? selectedCategory : null, searchTerm || null),
+          facilitiesService.getCategories(),
+        ]);
+
+        setFacilities(facilitiesRes.data?.facilities || []);
+        if (categoriesRes.data?.categories) {
+          setCategories(['all', ...categoriesRes.data.categories]);
+        }
+      } catch (err) {
+        if (err.status === 401) {
+          navigate('/login');
+        } else if (err.status === 403) {
+          navigate('/unauthorized');
+        } else {
+          setError(formatErrorMessage(err));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFacilities();
+  }, [isAuthenticated, navigate, selectedCategory, searchTerm]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-50">
+        <nav className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+            <h1 className="text-xl font-bold text-neutral-900">Campus Facility Booking</h1>
+          </div>
+        </nav>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-neutral-200 border-t-primary-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-neutral-600">Loading facilities...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-neutral-50">
@@ -115,7 +114,7 @@ export default function FacilitiesPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 border-2 border-neutral-200 rounded-base font-sans text-sm"
+              className="px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm"
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
@@ -126,37 +125,49 @@ export default function FacilitiesPage() {
           </div>
         </Card>
 
-        {/* Facilities Grid */}
-        <div className="grid grid-cols-3 gap-8">
-          {filteredFacilities.map((facility) => (
-            <Card key={facility.id} hoverable>
-              <div className="mb-4 text-5xl text-center py-4 bg-primary-50 rounded">🏛️</div>
-              
-              <h3 className="font-semibold text-neutral-900 mb-2">{facility.name}</h3>
-              
-              <Badge variant="primary" className="mb-3">
-                {facility.category}
-              </Badge>
-              
-              <div className="space-y-2 mb-4 text-sm text-neutral-600">
-                <p>🧑‍🤝‍🧑 {facility.capacity} people capacity</p>
-                <p>⭐ {facility.rating} ({facility.reviews} reviews)</p>
-              </div>
-
-              <Link to={`/facilities/${facility.id}`}>
-                <Button variant="primary" size="full">
-                  View Details
-                </Button>
-              </Link>
-            </Card>
-          ))}
-        </div>
-
-        {filteredFacilities.length === 0 && (
-          <Card className="text-center py-12">
-            <p className="text-neutral-600">No facilities found matching your search.</p>
+        {error && (
+          <Card className="mb-8 p-4 bg-error bg-opacity-10 border border-error border-opacity-30">
+            <p className="text-error text-sm">{error}</p>
           </Card>
         )}
+
+        {/* Facilities Grid */}
+        <div className="grid grid-cols-3 gap-8">
+          {facilities && facilities.length > 0 ? (
+            facilities.map((facility) => (
+              <Card key={facility.id} hoverable>
+                <div className="mb-4 text-5xl text-center py-4 bg-primary-50 rounded">🏛️</div>
+
+                <h3 className="font-semibold text-neutral-900 mb-2">{facility.name}</h3>
+
+                {facility.category && (
+                  <Badge variant="primary" className="mb-3">
+                    {facility.category}
+                  </Badge>
+                )}
+
+                <div className="space-y-2 mb-4 text-sm text-neutral-600">
+                  {facility.capacity && <p>🧑‍🤝‍🧑 {facility.capacity} people capacity</p>}
+                  {facility.rating && (
+                    <p>⭐ {facility.rating} ({facility.reviews || 0} reviews)</p>
+                  )}
+                </div>
+
+                <Link to={`/facilities/${facility.id}`}>
+                  <Button variant="primary" size="full">
+                    View Details
+                  </Button>
+                </Link>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-3">
+              <Card className="text-center py-12">
+                <p className="text-neutral-600">No facilities found matching your search.</p>
+              </Card>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

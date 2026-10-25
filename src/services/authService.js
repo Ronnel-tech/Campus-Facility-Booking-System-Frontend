@@ -119,11 +119,7 @@ const authService = {
         role: role.toLowerCase(),
       });
 
-      if (response.data?.token) {
-        apiService.setToken(response.data.token);
-        tokenStorage.set('user', JSON.stringify(response.data.user));
-      }
-
+      // Registration does not create a session. The user must log in next.
       return response.data;
     } catch (error) {
       if (error instanceof ValidationError) {

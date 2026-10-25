@@ -1,54 +1,78 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../components/ui/Badge';
 import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
+import { useAuth } from '../hooks/useAuth';
+import { formatErrorMessage } from '../lib/validation';
+import reservationsService from '../services/reservationsService';
 
 export default function MyReservationsPage() {
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
-  const [reservations] = useState({
-    upcoming: [
-      {
-        id: 1,
-        name: 'Computer Lab A',
-        type: 'Facility',
-        date: 'Oct 25, 2026',
-        time: '2:00 PM - 4:00 PM',
-        status: 'approved',
-        attendees: 25
-      },
-      {
-        id: 2,
-        name: 'Meeting Room B',
-        type: 'Facility',
-        date: 'Oct 26, 2026',
-        time: '10:00 AM - 11:30 AM',
-        status: 'approved',
-        attendees: 8
-      }
-    ],
-    pending: [
-      {
-        id: 3,
-        name: 'Lab Equipment Set',
-        type: 'Asset',
-        date: 'Oct 27, 2026',
-        status: 'pending'
-      }
-    ],
-    past: [
-      {
-        id: 4,
-        name: 'Classroom A101',
-        type: 'Facility',
-        date: 'Oct 20, 2026',
-        time: '1:00 PM - 2:00 PM',
-        status: 'completed',
-        attendees: 30
-      }
-    ]
+  const [activeTab, setActiveTab] = useState('upcoming');
+  const [reservations, setReservations] = useState({
+    upcoming: [],
+    pending: [],
+    past: [],
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    const fetchReservations = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const upcomingRes = await reservationsService.getAll(1, 100, 'approved');
+        const pendingRes = await reservationsService.getAll(1, 100, 'pending');
+        const pastRes = await reservationsService.getAll(1, 100, 'completed');
+
+        setReservations({
+          upcoming: upcomingRes.data?.reservations || [],
+          pending: pendingRes.data?.reservations || [],
+          past: pastRes.data?.reservations || [],
+        });
+      } catch (err) {
+        if (err.status === 401) {
+          navigate('/login');
+        } else if (err.status === 403) {
+          navigate('/unauthorized');
+        } else {
+          setError(formatErrorMessage(err));
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReservations();
+  }, [isAuthenticated, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-50">
+        <nav className="bg-white border-b border-neutral-200 sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+            <h1 className="text-xl font-bold text-neutral-900">Campus Facility Booking</h1>
+          </div>
+        </nav>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-neutral-200 border-t-primary-500 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-neutral-600">Loading reservations...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = ['upcoming', 'pending', 'past'];
 
@@ -81,6 +105,12 @@ export default function MyReservationsPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-8 py-8">
+        {error && (
+          <Card className="mb-8 p-4 bg-error bg-opacity-10 border border-error border-opacity-30">
+            <p className="text-error text-sm">{error}</p>
+          </Card>
+        )}
+
         {/* Tabs */}
         <div className="flex gap-8 border-b-2 border-neutral-200 mb-8">
           {tabs.map((tab) => (
@@ -89,7 +119,7 @@ export default function MyReservationsPage() {
               onClick={() => setActiveTab(tab)}
               className={`pb-4 font-semibold capitalize transition ${
                 activeTab === tab
-                  ? 'text-primary-500 border-b-3 border-primary-500'
+                  ? 'text-primary-500 border-b-4 border-primary-500'
                   : 'text-neutral-600 hover:text-neutral-900'
               }`}
             >
@@ -112,15 +142,18 @@ export default function MyReservationsPage() {
               <Card key={res.id} hoverable>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="text-3xl">
-                      {res.type === 'Facility' ? '🏛️' : '📦'}
-                    </div>
+                    <div className="text-3xl">🏛️</div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-neutral-900 text-lg">{res.name}</h3>
-                      <p className="text-sm text-neutral-600">Type: {res.type}</p>
-                      {res.time && <p className="text-sm text-neutral-600">{res.date} | {res.time}</p>}
-                      {!res.time && <p className="text-sm text-neutral-600">{res.date}</p>}
-                      {res.attendees && <p className="text-xs text-neutral-500 mt-1">Attendees: {res.attendees}</p>}
+                      <h3 className="font-semibold text-neutral-900 text-lg">
+                        {res.facility_name}
+                      </h3>
+                      <p className="text-sm text-neutral-600">
+                        {new Date(res.start_date).toLocaleDateString()} |{' '}
+                        {res.start_time} - {res.end_time}
+                      </p>
+                      {res.attendees && (
+                        <p className="text-xs text-neutral-500 mt-1">Attendees: {res.attendees}</p>
+                      )}
                     </div>
                   </div>
 

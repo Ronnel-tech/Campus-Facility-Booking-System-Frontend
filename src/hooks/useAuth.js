@@ -90,39 +90,32 @@ export const useAuth = () => {
     }
   }, []);
 
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (credentials) => {
     try {
-      setIsLoading(true);
       setError(null);
-      const response = await authService.login(email, password);
+      const response = await authService.login(credentials);
       setUser(response.user);
       setIsAuthenticated(true);
       scheduleTokenRefresh();
       return response;
     } catch (err) {
       setError(err.message);
+      setUser(null);
+      setIsAuthenticated(false);
       throw err;
-    } finally {
-      setIsLoading(false);
     }
   }, [scheduleTokenRefresh]);
 
-  const register = useCallback(async (email, username, password, role = 'student') => {
+  const register = useCallback(async (userData) => {
     try {
-      setIsLoading(true);
       setError(null);
-      const response = await authService.register(email, username, password, role);
-      setUser(response.user);
-      setIsAuthenticated(true);
-      scheduleTokenRefresh();
+      const response = await authService.register(userData);
       return response;
     } catch (err) {
       setError(err.message);
       throw err;
-    } finally {
-      setIsLoading(false);
     }
-  }, [scheduleTokenRefresh]);
+  }, []);
 
   const logout = useCallback(async () => {
     try {
