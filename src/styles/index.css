@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: theme("fontFamily.sans");
+  }
+
+  body {
+    @apply m-0 bg-gray-50 text-gray-900 antialiased;
+  }
+
+  button,
+  a {
+    @apply transition;
+  }
+}
