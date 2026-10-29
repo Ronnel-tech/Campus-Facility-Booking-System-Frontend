@@ -8,8 +8,8 @@ import authService from '../services/authService';
  * - Handles automatic logout on token expiry
  */
 export const useAuth = () => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(() => authService.getCurrentUser());
+  const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const refreshTimeoutRef = useRef(null);

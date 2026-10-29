@@ -11,7 +11,7 @@ import notificationsService from '../services/notificationsService';
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const [userProfile, setUserProfile] = useState(null);
   const [reservations, setReservations] = useState([]);
@@ -20,6 +20,10 @@ export default function StudentDashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -53,7 +57,7 @@ export default function StudentDashboard() {
     };
 
     fetchDashboardData();
-  }, [isAuthenticated, navigate]);
+  }, [authLoading, isAuthenticated, navigate]);
 
   const handleLogout = async () => {
     try {
