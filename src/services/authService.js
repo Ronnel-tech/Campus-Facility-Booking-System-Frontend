@@ -260,6 +260,8 @@ const authService = {
     }
   },
 
+  getToken: () => apiService.getToken(),
+
   /**
    * Check if user is authenticated
    * @returns {boolean}
