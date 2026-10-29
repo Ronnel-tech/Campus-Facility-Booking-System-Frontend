@@ -161,7 +161,9 @@ const authService = {
         password,
       });
 
-      const authData = response?.data || response;
+      const authData = response?.data?.token
+        ? response.data
+        : response?.data?.data || response?.data || response;
       if (!authData?.token) {
         throw new AuthenticationError('No token received from server');
       }
@@ -214,18 +216,21 @@ const authService = {
   refreshToken: async () => {
     try {
       const response = await apiService.post('/auth/refresh', {});
+      const authData = response?.data?.token
+        ? response.data
+        : response?.data?.data || response?.data || response;
 
-      if (!response.data?.token) {
+      if (!authData?.token) {
         throw new AuthenticationError('No token received from server');
       }
 
-      apiService.setToken(response.data.token);
+      apiService.setToken(authData.token);
 
-      if (response.data.user) {
-        tokenStorage.set('user', JSON.stringify(response.data.user));
+      if (authData.user) {
+        tokenStorage.set('user', JSON.stringify(authData.user));
       }
 
-      return response.data;
+      return authData;
     } catch (error) {
       // If refresh fails, clear auth and require re-login
       apiService.clearAuthTokens();
