@@ -47,7 +47,9 @@ export const useAuth = () => {
         setError(err.message);
         setUser(null);
         setIsAuthenticated(false);
-        authService.logout();
+        // Initialization failures should not trigger another network request.
+        // Clear the invalid local session and let the user sign in again.
+        authService.clearAuthState();
       } finally {
         setIsLoading(false);
       }

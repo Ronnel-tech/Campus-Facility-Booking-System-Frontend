@@ -161,14 +161,17 @@ const authService = {
         password,
       });
 
-      if (!response.data?.token) {
+      const authData = response?.data || response;
+      if (!authData?.token) {
         throw new AuthenticationError('No token received from server');
       }
 
-      apiService.setToken(response.data.token);
-      tokenStorage.set('user', JSON.stringify(response.data.user));
+      apiService.setToken(authData.token);
+      if (authData.user) {
+        tokenStorage.set('user', JSON.stringify(authData.user));
+      }
 
-      return response.data;
+      return authData;
     } catch (error) {
       if (error instanceof ValidationError || error instanceof AuthenticationError) {
         throw error;
@@ -186,7 +189,9 @@ const authService = {
   logout: async () => {
     try {
       // Attempt server logout to invalidate session
-      await apiService.post('/auth/logout', {});
+      if (apiService.getToken()) {
+        await apiService.post('/auth/logout', {});
+      }
     } catch (error) {
       // Continue logout even if server call fails
       console.error('Server logout failed:', error.message);
@@ -195,6 +200,11 @@ const authService = {
       apiService.clearAuthTokens();
       tokenStorage.remove('user');
     }
+  },
+
+  clearAuthState: () => {
+    apiService.clearAuthTokens();
+    tokenStorage.remove('user');
   },
 
   /**
