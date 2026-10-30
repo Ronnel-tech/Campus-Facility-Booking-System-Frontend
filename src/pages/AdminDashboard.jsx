@@ -42,15 +42,16 @@ export default function AdminDashboard() {
         setLoading(true);
         setError(null);
 
-        const [statsRes, reservationsRes, activityRes] = await Promise.all([
-          apiService.get('/admin/dashboard'),
-          apiService.get('/admin/reservations?status=pending&limit=5'),
-          apiService.get('/admin/reports/recent-activity?limit=10'),
-        ]);
+        const dashboardRes = await apiService.get('/admin/dashboard');
+        const dashboardData = dashboardRes.data || {};
 
-        setStats(statsRes.data || {});
-        setPendingReservations(reservationsRes.data?.reservations || []);
-        setRecentActivity(activityRes.data?.activity || []);
+        setStats(dashboardData.stats || {});
+        setPendingReservations(
+          dashboardData.recent_activity?.filter(
+            (reservation) => reservation.status === 'pending'
+          ) || []
+        );
+        setRecentActivity(dashboardData.recent_activity || []);
       } catch (err) {
         if (err.status === 401) {
           navigate('/login');
@@ -177,14 +178,14 @@ export default function AdminDashboard() {
 
           <Card className="text-center">
             <div className="text-4xl mb-3">🔄</div>
-            <div className="text-3xl font-bold text-neutral-900 mb-1">{stats.checked_out_items || 0}</div>
-            <div className="text-sm font-medium text-neutral-600">Items Checked Out</div>
+            <div className="text-3xl font-bold text-neutral-900 mb-1">{stats.active_reservations || 0}</div>
+            <div className="text-sm font-medium text-neutral-600">Active Reservations</div>
           </Card>
 
           <Card className="text-center">
             <div className="text-4xl mb-3">⚠️</div>
-            <div className="text-3xl font-bold text-error mb-1">{stats.overdue_returns || 0}</div>
-            <div className="text-sm font-medium text-neutral-600">Overdue Returns</div>
+            <div className="text-3xl font-bold text-error mb-1">{stats.overdue_assets || 0}</div>
+            <div className="text-sm font-medium text-neutral-600">Overdue Assets</div>
           </Card>
         </div>
 
