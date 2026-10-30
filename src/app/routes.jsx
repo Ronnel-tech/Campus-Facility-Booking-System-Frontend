@@ -19,7 +19,12 @@ import AdminUsersPage from '../pages/AdminUsersPage';
 import AdminReportsPage from '../pages/AdminReportsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
-import { ProtectedRoute, RoleBasedRoute, PublicRoute } from '../components/ProtectedRoute';
+import {
+  ProtectedRoute,
+  RoleBasedRoute,
+  PublicRoute,
+  DashboardRedirect,
+} from '../components/ProtectedRoute';
 
 /**
  * Route Configuration with Role-Based Access Control
@@ -54,6 +59,10 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/dashboard',
+        element: <DashboardRedirect />,
+      },
+      {
+        path: '/dashboard/student',
         element: <StudentDashboard />,
       },
       {

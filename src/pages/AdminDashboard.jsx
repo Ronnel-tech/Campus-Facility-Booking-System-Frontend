@@ -9,7 +9,7 @@ import apiService from '../services/apiService';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   const [stats, setStats] = useState({});
   const [pendingReservations, setPendingReservations] = useState([]);
@@ -17,7 +17,16 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
   useEffect(() => {
+    if (authLoading) {
+      return;
+    }
+
     if (!isAuthenticated) {
       navigate('/login');
       return;
@@ -56,7 +65,7 @@ export default function AdminDashboard() {
     };
 
     fetchDashboardData();
-  }, [isAuthenticated, user, navigate]);
+  }, [authLoading, isAuthenticated, user, navigate]);
 
   if (loading) {
     return (
@@ -82,14 +91,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
-  const handleLogout = async () => {
-    try {
-      await apiService.post('/auth/logout', {});
-    } finally {
-      navigate('/login');
-    }
-  };
 
   const handleApprove = async (id) => {
     try {

@@ -31,6 +31,16 @@ export const RoleBasedRoute = ({ allowedRoles = [] }) => {
   return <Outlet />;
 };
 
+export const DashboardRedirect = () => {
+  const user = authService.getCurrentUser();
+
+  if (['admin', 'faculty', 'staff'].includes(user?.role)) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  return <Navigate to="/dashboard/student" replace />;
+};
+
 /**
  * PublicRoute - Allows only unauthenticated users
  * - Redirects authenticated users to dashboard
