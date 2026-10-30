@@ -296,19 +296,22 @@ export default function AdminAssetsPage() {
                   required
                   placeholder="LAP-001, PROJ-002, etc."
                 />
-                <Input
-                  label="Category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleFormChange}
-                  error={formErrors.category}
-                  required
-                >
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Category<span className="text-error ml-1">*</span></label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm"
+                    required
+                  >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
-                </Input>
+                  </select>
+                  {formErrors.category && <p className="text-error text-sm mt-1">{formErrors.category}</p>}
+                </div>
                 <Input
                   label="Total Quantity"
                   type="number"
@@ -321,28 +324,22 @@ export default function AdminAssetsPage() {
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Condition"
-                  name="condition"
-                  value={formData.condition}
-                  onChange={handleFormChange}
-                  required
-                >
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Condition</label>
+                  <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" required>
                   {conditions.map((c) => (
                     <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
                   ))}
-                </Input>
-                <Input
-                  label="Status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleFormChange}
-                  required
-                >
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
+                  <select name="status" value={formData.status} onChange={handleFormChange} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" required>
                   {statuses.map((s) => (
                     <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>
                   ))}
-                </Input>
+                  </select>
+                </div>
               </div>
               <Input
                 label="Location"
@@ -353,23 +350,14 @@ export default function AdminAssetsPage() {
                 required
                 placeholder="Equipment Room A, Media Lab, etc."
               />
-              <Input
-                label="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleFormChange}
-                rows="2"
-                type="textarea"
-              />
-              <Input
-                label="Specifications (JSON or text)"
-                name="specifications"
-                value={formData.specifications}
-                onChange={handleFormChange}
-                rows="2"
-                type="textarea"
-                placeholder='{"brand": "Dell", "model": "XPS 15", "ram": "16GB"}'
-              />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Description</label>
+                <textarea name="description" value={formData.description} onChange={handleFormChange} rows="2" className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Specifications (JSON or text)</label>
+                <textarea name="specifications" value={formData.specifications} onChange={handleFormChange} rows="2" placeholder='{"brand": "Dell", "model": "XPS 15", "ram": "16GB"}' className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" />
+              </div>
               <div className="flex gap-4">
                 <Button variant="primary" type="submit" disabled={submitting}>
                   {submitting ? 'Saving...' : isEditing ? 'Update' : 'Create'}

@@ -257,19 +257,22 @@ export default function AdminFacilitiesPage() {
                   error={formErrors.name}
                   required
                 />
-                <Input
-                  label="Category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleFormChange}
-                  error={formErrors.category}
-                  required
-                >
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Category<span className="text-error ml-1">*</span></label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm"
+                    required
+                  >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
-                </Input>
+                  </select>
+                  {formErrors.category && <p className="text-error text-sm mt-1">{formErrors.category}</p>}
+                </div>
                 <Input
                   label="Capacity"
                   type="number"
@@ -297,14 +300,16 @@ export default function AdminFacilitiesPage() {
                 onChange={handleFormChange}
                 placeholder="Projector, Whiteboard, WiFi, AC"
               />
-              <Input
-                label="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleFormChange}
-                rows="3"
-                type="textarea"
-              />
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Description</label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleFormChange}
+                  rows="3"
+                  className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm"
+                />
+              </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
                 <select

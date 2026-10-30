@@ -232,18 +232,21 @@ export default function AdminUsersPage() {
                   required
                   minLength="8"
                 />
-                <Input
-                  label="Role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleFormChange}
-                  error={formErrors.role}
-                  required
-                >
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">Role<span className="text-error ml-1">*</span></label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleFormChange}
+                    className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm"
+                    required
+                  >
                   {roles.map((r) => (
                     <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
                   ))}
-                </Input>
+                  </select>
+                  {formErrors.role && <p className="text-error text-sm mt-1">{formErrors.role}</p>}
+                </div>
               </div>
               <div className="flex gap-4">
                 <Button variant="primary" type="submit" disabled={submitting}>
