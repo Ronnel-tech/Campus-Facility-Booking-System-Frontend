@@ -11,7 +11,7 @@ import notificationsService from '../services/notificationsService';
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   const [userProfile, setUserProfile] = useState(null);
   const [reservations, setReservations] = useState([]);
@@ -60,13 +60,8 @@ export default function StudentDashboard() {
   }, [authLoading, isAuthenticated, navigate]);
 
   const handleLogout = async () => {
-    try {
-      await apiService.post('/auth/logout', {});
-    } catch (err) {
-      // Continue logout even if server call fails
-    } finally {
-      navigate('/login');
-    }
+    await logout();
+    navigate('/login', { replace: true });
   };
 
   if (loading) {
