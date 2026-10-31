@@ -10,7 +10,7 @@ import facilitiesService from '../services/facilitiesService';
 export default function FacilityDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [facility, setFacility] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -192,11 +192,13 @@ export default function FacilityDetailsPage() {
         )}
 
         {/* CTA Button */}
-        <Link to={`/new-reservation?facility=${facility.id}`}>
-          <Button variant="primary" size="full" className="py-4 text-lg">
-            Reserve This Facility
-          </Button>
-        </Link>
+        {['faculty', 'staff'].includes(user?.role) && (
+          <Link to={`/new-reservation?facility=${facility.id}`}>
+            <Button variant="primary" size="full" className="py-4 text-lg">
+              Reserve This Facility
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );

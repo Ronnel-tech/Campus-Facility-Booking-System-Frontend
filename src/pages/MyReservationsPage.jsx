@@ -9,7 +9,7 @@ import reservationsService from '../services/reservationsService';
 
 export default function MyReservationsPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [activeTab, setActiveTab] = useState('upcoming');
   const [reservations, setReservations] = useState({
@@ -36,9 +36,9 @@ export default function MyReservationsPage() {
         const pastRes = await reservationsService.getAll(1, 100, 'completed');
 
         setReservations({
-          upcoming: upcomingRes.data?.reservations || [],
-          pending: pendingRes.data?.reservations || [],
-          past: pastRes.data?.reservations || [],
+          upcoming: upcomingRes.data || [],
+          pending: pendingRes.data || [],
+          past: pastRes.data || [],
         });
       } catch (err) {
         if (err.status === 401) {
@@ -89,9 +89,6 @@ export default function MyReservationsPage() {
             <Link to="/facilities" className="text-neutral-600 hover:text-neutral-900">
               Facilities
             </Link>
-            <Link to="/new-reservation" className="text-neutral-600 hover:text-neutral-900">
-              New Booking
-            </Link>
           </div>
         </div>
       </nav>
@@ -133,9 +130,11 @@ export default function MyReservationsPage() {
           {reservations[activeTab].length === 0 ? (
             <Card className="text-center py-12">
               <p className="text-neutral-600 mb-4">No {activeTab} reservations</p>
-              <Link to="/new-reservation">
-                <Button variant="primary">Create New Reservation</Button>
-              </Link>
+              {['faculty', 'staff'].includes(user?.role) && (
+                <Link to="/new-reservation">
+                  <Button variant="primary">Create New Reservation</Button>
+                </Link>
+              )}
             </Card>
           ) : (
             reservations[activeTab].map((res) => (

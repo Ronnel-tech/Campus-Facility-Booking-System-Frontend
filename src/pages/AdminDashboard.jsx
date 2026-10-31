@@ -97,7 +97,7 @@ export default function AdminDashboard() {
     try {
       await apiService.post(`/admin/reservations/${id}/approve`, {});
       const res = await apiService.get('/admin/reservations?status=pending&limit=5');
-      setPendingReservations(res.data?.reservations || []);
+      setPendingReservations(res.data || []);
     } catch (err) {
       console.error('Approve failed:', err);
     }
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
     try {
       await apiService.post(`/admin/reservations/${id}/reject`, { remarks: remarks || '' });
       const res = await apiService.get('/admin/reservations?status=pending&limit=5');
-      setPendingReservations(res.data?.reservations || []);
+      setPendingReservations(res.data || []);
     } catch (err) {
       console.error('Reject failed:', err);
     }

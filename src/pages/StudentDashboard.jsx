@@ -176,13 +176,15 @@ export default function StudentDashboard() {
             </Card>
           </Link>
 
-          <Link to="/new-reservation" className="block">
-            <Card className="text-center hover:bg-primary-50 transition-colors">
-              <div className="text-4xl mb-3">📅</div>
-              <div className="text-xl font-bold text-neutral-900 mb-1">New Reservation</div>
-              <div className="text-sm font-medium text-neutral-600">Book a facility</div>
-            </Card>
-          </Link>
+          {['faculty', 'staff'].includes(user?.role) && (
+            <Link to="/new-reservation" className="block">
+              <Card className="text-center hover:bg-primary-50 transition-colors">
+                <div className="text-4xl mb-3">📅</div>
+                <div className="text-xl font-bold text-neutral-900 mb-1">New Reservation</div>
+                <div className="text-sm font-medium text-neutral-600">Book a facility</div>
+              </Card>
+            </Link>
+          )}
 
           <Link to="/reservations" className="block">
             <Card className="text-center hover:bg-primary-50 transition-colors">
@@ -245,9 +247,11 @@ export default function StudentDashboard() {
               ) : (
                 <div className="text-center py-8 text-neutral-600">
                   <p>No upcoming reservations</p>
-                  <Link to="/new-reservation" className="mt-4 inline-block">
-                    <Button variant="primary" size="sm">Create One</Button>
-                  </Link>
+                  {['faculty', 'staff'].includes(user?.role) && (
+                    <Link to="/new-reservation" className="mt-4 inline-block">
+                      <Button variant="primary" size="sm">Create One</Button>
+                    </Link>
+                  )}
                 </div>
               )}
             </Card>

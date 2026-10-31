@@ -17,7 +17,7 @@ import assetsService from '../services/assetsService';
 export default function NewReservationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [step, setStep] = useState(1);
   const [facilities, setFacilities] = useState([]);
@@ -43,6 +43,11 @@ export default function NewReservationPage() {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
+      return;
+    }
+
+    if (!['faculty', 'staff'].includes(user?.role)) {
+      navigate('/unauthorized');
       return;
     }
 
@@ -72,7 +77,7 @@ export default function NewReservationPage() {
     };
 
     fetchData();
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, user]);
 
   const validateStep = () => {
     const errors = {};

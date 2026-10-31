@@ -82,8 +82,13 @@ export const router = createBrowserRouter([
         element: <AssetDetailsPage />,
       },
       {
-        path: '/new-reservation',
-        element: <NewReservationPage />,
+        element: <RoleBasedRoute allowedRoles={['faculty', 'staff']} />,
+        children: [
+          {
+            path: '/new-reservation',
+            element: <NewReservationPage />,
+          },
+        ],
       },
       {
         path: '/reservations',
@@ -104,12 +109,12 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // Admin routes (admin, faculty, staff roles only)
+  // Admin routes (administrators only)
   {
     element: <ProtectedRoute />,
     children: [
       {
-        element: <RoleBasedRoute allowedRoles={['admin', 'faculty', 'staff']} />,
+        element: <RoleBasedRoute allowedRoles={['admin']} />,
         children: [
           {
             path: '/admin',

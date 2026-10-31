@@ -10,7 +10,7 @@ import assetsService from '../services/assetsService';
 export default function AssetDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const [asset, setAsset] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -218,7 +218,7 @@ export default function AssetDetailsPage() {
 
         {/* Actions */}
         <div className="mt-8 flex gap-4">
-          {asset.status === 'available' && (
+          {asset.status === 'available' && ['faculty', 'staff'].includes(user?.role) && (
             <Link to={`/new-reservation?asset=${asset.id}`}>
               <Button variant="primary" size="lg">Borrow This Asset</Button>
             </Link>
