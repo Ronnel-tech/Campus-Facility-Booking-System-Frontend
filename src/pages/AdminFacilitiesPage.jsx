@@ -66,8 +66,8 @@ export default function AdminFacilitiesPage() {
         apiService.get('/facilities/categories'),
       ]);
 
-      setFacilities(facilitiesRes.data?.facilities || []);
-      setCategories(categoriesRes.data?.categories || []);
+      setFacilities(facilitiesRes.data || []);
+      setCategories(categoriesRes.data || []);
     } catch (err) {
       if (err.status === 401) {
         navigate('/login');
@@ -109,7 +109,7 @@ export default function AdminFacilitiesPage() {
     try {
       const data = {
         name: formData.name.trim(),
-        category: formData.category,
+        category_id: formData.category,
         capacity: parseInt(formData.capacity),
         location: formData.location.trim(),
         description: formData.description.trim(),
@@ -152,7 +152,7 @@ export default function AdminFacilitiesPage() {
   const handleEdit = (facility) => {
     setFormData({
       name: facility.name,
-      category: facility.category,
+      category: facility.category_id || facility.category?.id || '',
       capacity: facility.capacity,
       location: facility.location,
       description: facility.description || '',
@@ -193,7 +193,7 @@ export default function AdminFacilitiesPage() {
 
   const filteredFacilities = facilities.filter((f) => {
     const matchesSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || f.category === filterCategory;
+    const matchesCategory = filterCategory === 'all' || String(f.category_id) === String(filterCategory);
     return matchesSearch && matchesCategory;
   });
 
@@ -268,7 +268,7 @@ export default function AdminFacilitiesPage() {
                   >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                   </select>
                   {formErrors.category && <p className="text-error text-sm mt-1">{formErrors.category}</p>}
@@ -350,7 +350,7 @@ export default function AdminFacilitiesPage() {
           >
             <option value="all">All Categories</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>

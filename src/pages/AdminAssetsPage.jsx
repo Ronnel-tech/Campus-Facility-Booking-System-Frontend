@@ -69,8 +69,8 @@ export default function AdminAssetsPage() {
         apiService.get('/assets/categories'),
       ]);
 
-      setAssets(assetsRes.data?.assets || []);
-      setCategories(categoriesRes.data?.categories || []);
+      setAssets(assetsRes.data || []);
+      setCategories(categoriesRes.data || []);
     } catch (err) {
       if (err.status === 401) {
         navigate('/login');
@@ -113,12 +113,12 @@ export default function AdminAssetsPage() {
     try {
       const data = {
         name: formData.name.trim(),
-        category: formData.category,
+        category_id: formData.category,
         asset_tag: formData.asset_tag.trim(),
-        total_quantity: parseInt(formData.total_quantity),
+        quantity: parseInt(formData.total_quantity),
         condition: formData.condition,
         status: formData.status,
-        location: formData.location.trim(),
+        current_location: formData.location.trim(),
         description: formData.description.trim(),
         specifications: formData.specifications.trim(),
       };
@@ -156,7 +156,7 @@ export default function AdminAssetsPage() {
   const handleEdit = (asset) => {
     setFormData({
       name: asset.name,
-      category: asset.category,
+      category: asset.category_id || asset.category?.id || '',
       asset_tag: asset.asset_tag,
       total_quantity: asset.total_quantity || asset.quantity || '1',
       condition: asset.condition,
@@ -202,7 +202,7 @@ export default function AdminAssetsPage() {
   const filteredAssets = assets.filter((a) => {
     const matchesSearch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          a.asset_tag.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || a.category === filterCategory;
+    const matchesCategory = filterCategory === 'all' || String(a.category_id) === String(filterCategory);
     const matchesStatus = filterStatus === 'all' || a.status === filterStatus;
     return matchesSearch && matchesCategory && matchesStatus;
   });
@@ -307,7 +307,7 @@ export default function AdminAssetsPage() {
                   >
                   <option value="">Select Category</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                   </select>
                   {formErrors.category && <p className="text-error text-sm mt-1">{formErrors.category}</p>}
@@ -385,7 +385,7 @@ export default function AdminAssetsPage() {
           >
             <option value="all">All Categories</option>
             {categories.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
           <select
