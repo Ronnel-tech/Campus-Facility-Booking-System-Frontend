@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { formatLabel, searchableText } from '../lib/utils';
+import { formatLabel, searchableText, toCollection } from '../lib/utils';
 
 export default function AdminUsersPage() {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function AdminUsersPage() {
       setError(null);
 
       const res = await apiService.get('/admin/users');
-      setUsers((res.data || []).filter(Boolean).map((user) => ({
+      setUsers(toCollection(res.data).filter(Boolean).map((user) => ({
         ...user,
         name: user.name || user.username || '',
         status: user.status || (Number(user.is_active) === 1 ? 'active' : 'inactive'),
@@ -106,7 +106,7 @@ export default function AdminUsersPage() {
 
       setFormData({ username: '', email: '', password: '', role: 'student' });
       setShowAddForm(false);
-      fetchUsers();
+      await fetchUsers();
     } catch (err) {
       if (err.details?.errors) {
         setFormErrors(err.details.errors);
@@ -206,6 +206,12 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-8 py-8">
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-error">
+            {error}
+          </div>
+        )}
+
         {showAddForm && (
           <Card className="mb-8 border-2 border-primary-500">
             <h3 className="text-lg font-bold text-neutral-900 mb-4">Add New User</h3>

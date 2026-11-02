@@ -35,3 +35,16 @@ export function toList(value) {
 
   return value == null ? [] : [value];
 }
+
+export function toCollection(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (value && typeof value === "object") {
+    if (Array.isArray(value.data)) return value.data;
+    if (Array.isArray(value.users)) return value.users;
+  }
+
+  return value == null ? [] : [value];
+}
