@@ -7,6 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
+import { displayName } from '../lib/utils';
 
 export default function AdminAssetsPage() {
   const navigate = useNavigate();
@@ -443,7 +444,7 @@ export default function AdminAssetsPage() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="info">{asset.category}</Badge>
+                        <Badge variant="info">{displayName(asset.category)}</Badge>
                       </td>
                       <td className="px-6 py-4 font-mono text-sm text-neutral-900">{asset.asset_tag}</td>
                       <td className="px-6 py-4 text-neutral-900">{asset.total_quantity || asset.quantity || 1}</td>

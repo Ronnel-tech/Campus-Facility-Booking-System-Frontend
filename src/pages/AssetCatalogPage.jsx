@@ -7,6 +7,7 @@ import Card from '../components/ui/Card';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import assetsService from '../services/assetsService';
+import { displayName } from '../lib/utils';
 
 export default function AssetCatalogPage() {
   const navigate = useNavigate();
@@ -124,7 +125,7 @@ export default function AssetCatalogPage() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === 'all' ? 'All Categories' : cat}
+                  {cat === 'all' ? 'All Categories' : displayName(cat)}
                 </option>
               ))}
             </select>
@@ -151,7 +152,7 @@ export default function AssetCatalogPage() {
 
                 {asset.category && (
                   <Badge variant="primary" className="mb-3">
-                    {asset.category}
+                    {displayName(asset.category)}
                   </Badge>
                 )}
 

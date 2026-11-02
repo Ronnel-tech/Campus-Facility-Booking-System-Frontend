@@ -6,6 +6,7 @@ import Card from '../components/ui/Card';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import facilitiesService from '../services/facilitiesService';
+import { displayName } from '../lib/utils';
 
 export default function FacilityDetailsPage() {
   const { id } = useParams();
@@ -117,7 +118,7 @@ export default function FacilityDetailsPage() {
               <h1 className="text-4xl font-bold mb-2">{facility.name}</h1>
               {facility.category && (
                 <Badge variant="approved" className="bg-white text-primary-500">
-                  {facility.category}
+                  {displayName(facility.category)}
                 </Badge>
               )}
               {facility.rating && (

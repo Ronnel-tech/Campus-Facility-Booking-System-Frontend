@@ -7,6 +7,7 @@ import Card from '../components/ui/Card';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import facilitiesService from '../services/facilitiesService';
+import { displayName } from '../lib/utils';
 
 export default function FacilitiesPage() {
   const navigate = useNavigate();
@@ -118,7 +119,7 @@ export default function FacilitiesPage() {
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === 'all' ? 'All Categories' : cat}
+                  {cat === 'all' ? 'All Categories' : displayName(cat)}
                 </option>
               ))}
             </select>
@@ -142,7 +143,7 @@ export default function FacilitiesPage() {
 
                 {facility.category && (
                   <Badge variant="primary" className="mb-3">
-                    {facility.category}
+                    {displayName(facility.category)}
                   </Badge>
                 )}
 

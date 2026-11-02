@@ -6,6 +6,7 @@ import Card from '../components/ui/Card';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import assetsService from '../services/assetsService';
+import { displayName } from '../lib/utils';
 
 export default function AssetDetailsPage() {
   const { id } = useParams();
@@ -124,7 +125,7 @@ export default function AssetDetailsPage() {
             <div>
               <h1 className="text-4xl font-bold mb-2">{asset.name}</h1>
               <Badge variant="info" className="bg-white text-primary-500">
-                {asset.category}
+                {displayName(asset.category)}
               </Badge>
               <p className="text-lg mt-2 opacity-90">Tag: {asset.asset_tag}</p>
             </div>

@@ -13,6 +13,7 @@ import {
 import reservationsService from '../services/reservationsService';
 import facilitiesService from '../services/facilitiesService';
 import assetsService from '../services/assetsService';
+import { displayName } from '../lib/utils';
 
 export default function NewReservationPage() {
   const navigate = useNavigate();
@@ -290,7 +291,7 @@ export default function NewReservationPage() {
                 </div>
                 <h3 className="font-bold text-neutral-900">{item.name}</h3>
                 {item.category && (
-                  <p className="text-sm text-neutral-600">{item.category}</p>
+                  <p className="text-sm text-neutral-600">{displayName(item.category)}</p>
                 )}
                 {item.capacity && (
                   <p className="text-sm text-neutral-600">Capacity: {item.capacity}</p>

@@ -7,6 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
+import { displayName } from '../lib/utils';
 
 export default function AdminFacilitiesPage() {
   const navigate = useNavigate();
@@ -392,7 +393,7 @@ export default function AdminFacilitiesPage() {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <Badge variant="info">{facility.category}</Badge>
+                        <Badge variant="info">{displayName(facility.category)}</Badge>
                       </td>
                       <td className="px-6 py-4 text-neutral-900">{facility.capacity}</td>
                       <td className="px-6 py-4 text-neutral-600">{facility.location}</td>
