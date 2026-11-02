@@ -232,6 +232,7 @@ const apiService = {
           data?.message || 'Invalid request data',
           {
             errors: data?.errors || data?.data?.errors,
+            data,
             originalStatus: response.status,
           }
         );
