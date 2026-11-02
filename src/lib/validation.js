@@ -138,6 +138,13 @@ export const formatErrorMessage = (error) => {
     return error.details.data.message;
   }
 
+  if (error?.details?.errors) {
+    const errorList = Array.isArray(error.details.errors)
+      ? error.details.errors
+      : Object.values(error.details.errors).flat();
+    if (errorList[0]) return errorList[0];
+  }
+
   if (error instanceof Error) {
     return error.message;
   }
