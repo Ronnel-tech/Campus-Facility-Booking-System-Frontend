@@ -134,6 +134,14 @@ export const formatErrorMessage = (error) => {
     return error.message;
   }
 
+  if (error?.details?.data?.error) {
+    return error.details.data.error;
+  }
+
+  if (error?.details?.data?.message) {
+    return error.details.data.message;
+  }
+
   if (error && error.message) {
     return error.message;
   }
