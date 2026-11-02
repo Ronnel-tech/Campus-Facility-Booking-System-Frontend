@@ -6,6 +6,7 @@ import Button from '../components/ui/Button';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import reservationsService from '../services/reservationsService';
+import { formatLabel } from '../lib/utils';
 
 export default function MyReservationsPage() {
   const navigate = useNavigate();
@@ -166,7 +167,7 @@ export default function MyReservationsPage() {
                             : 'neutral'
                       }
                     >
-                      {res.status.charAt(0).toUpperCase() + res.status.slice(1)}
+                      {formatLabel(res.status)}
                     </Badge>
 
                     <div className="flex gap-2">

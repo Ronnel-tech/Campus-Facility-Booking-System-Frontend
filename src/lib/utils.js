@@ -14,6 +14,11 @@ export function searchableText(value) {
   return String(value ?? "").toLowerCase();
 }
 
+export function formatLabel(value, fallback = "Unknown") {
+  const label = String(value ?? "").trim().replace(/-/g, " ");
+  return label ? label.charAt(0).toUpperCase() + label.slice(1) : fallback;
+}
+
 export function toList(value) {
   if (Array.isArray(value)) {
     return value;

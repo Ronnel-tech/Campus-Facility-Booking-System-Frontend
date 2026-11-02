@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { displayName, searchableText } from '../lib/utils';
+import { displayName, formatLabel, searchableText } from '../lib/utils';
 
 export default function AdminAssetsPage() {
   const navigate = useNavigate();
@@ -331,7 +331,7 @@ export default function AdminAssetsPage() {
                   <label className="block text-sm font-medium text-neutral-700 mb-2">Condition</label>
                   <select name="condition" value={formData.condition} onChange={handleFormChange} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" required>
                   {conditions.map((c) => (
-                    <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                    <option key={c} value={c}>{formatLabel(c)}</option>
                   ))}
                   </select>
                 </div>
@@ -339,7 +339,7 @@ export default function AdminAssetsPage() {
                   <label className="block text-sm font-medium text-neutral-700 mb-2">Status</label>
                   <select name="status" value={formData.status} onChange={handleFormChange} className="w-full px-4 py-3 border-2 border-neutral-200 rounded-lg font-sans text-sm" required>
                   {statuses.map((s) => (
-                    <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>
+                    <option key={s} value={s}>{formatLabel(s)}</option>
                   ))}
                   </select>
                 </div>
@@ -398,7 +398,7 @@ export default function AdminAssetsPage() {
           >
             <option value="all">All Statuses</option>
             {statuses.map((s) => (
-              <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1).replace('-', ' ')}</option>
+              <option key={s} value={s}>{formatLabel(s)}</option>
             ))}
           </select>
         </div>

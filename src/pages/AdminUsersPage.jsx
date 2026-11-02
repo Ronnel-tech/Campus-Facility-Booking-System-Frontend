@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { searchableText } from '../lib/utils';
+import { formatLabel, searchableText } from '../lib/utils';
 
 export default function AdminUsersPage() {
   const navigate = useNavigate();
@@ -245,7 +245,7 @@ export default function AdminUsersPage() {
                     required
                   >
                   {roles.map((r) => (
-                    <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
+                    <option key={r} value={r}>{formatLabel(r)}</option>
                   ))}
                   </select>
                   {formErrors.role && <p className="text-error text-sm mt-1">{formErrors.role}</p>}
@@ -277,7 +277,7 @@ export default function AdminUsersPage() {
           >
             <option value="all">All Roles</option>
             {roles.map((r) => (
-              <option key={r} value={r}>{r.charAt(0).toUpperCase() + r.slice(1)}</option>
+              <option key={r} value={r}>{formatLabel(r)}</option>
             ))}
           </select>
           <select
@@ -287,7 +287,7 @@ export default function AdminUsersPage() {
           >
             <option value="all">All Statuses</option>
             {statuses.map((s) => (
-              <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+              <option key={s} value={s}>{formatLabel(s)}</option>
             ))}
           </select>
         </div>
@@ -314,7 +314,7 @@ export default function AdminUsersPage() {
                       <td className="px-6 py-4 font-medium text-neutral-900">{user.name}</td>
                       <td className="px-6 py-4 text-neutral-600">{user.email}</td>
                       <td className="px-6 py-4">
-                        <Badge variant={getRoleBadgeVariant(user.role)}>{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</Badge>
+                        <Badge variant={getRoleBadgeVariant(user.role)}>{formatLabel(user.role)}</Badge>
                       </td>
                       <td className="px-6 py-4">
                         <Badge variant={getStatusBadgeVariant(user.status)}>{user.status}</Badge>
