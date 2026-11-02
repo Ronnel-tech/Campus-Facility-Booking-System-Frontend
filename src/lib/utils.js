@@ -10,6 +10,10 @@ export function displayName(value) {
   return value?.name || "";
 }
 
+export function searchableText(value) {
+  return String(value ?? "").toLowerCase();
+}
+
 export function toList(value) {
   if (Array.isArray(value)) {
     return value;

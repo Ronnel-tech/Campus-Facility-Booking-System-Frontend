@@ -7,6 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
+import { searchableText } from '../lib/utils';
 
 export default function AdminUsersPage() {
   const navigate = useNavigate();
@@ -131,8 +132,9 @@ export default function AdminUsersPage() {
   };
 
   const filteredUsers = users.filter((u) => {
-    const matchesSearch = u.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         u.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const query = searchableText(searchTerm);
+    const matchesSearch = searchableText(u.name).includes(query) ||
+                         searchableText(u.email).includes(query);
     const matchesRole = filterRole === 'all' || u.role === filterRole;
     const matchesStatus = filterStatus === 'all' || u.status === filterStatus;
     return matchesSearch && matchesRole && matchesStatus;

@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { displayName } from '../lib/utils';
+import { displayName, searchableText } from '../lib/utils';
 
 export default function AdminAssetsPage() {
   const navigate = useNavigate();
@@ -201,8 +201,9 @@ export default function AdminAssetsPage() {
   };
 
   const filteredAssets = assets.filter((a) => {
-    const matchesSearch = a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         a.asset_tag.toLowerCase().includes(searchTerm.toLowerCase());
+    const query = searchableText(searchTerm);
+    const matchesSearch = searchableText(a.name).includes(query) ||
+                         searchableText(a.asset_tag).includes(query);
     const matchesCategory = filterCategory === 'all' || String(a.category_id) === String(filterCategory);
     const matchesStatus = filterStatus === 'all' || a.status === filterStatus;
     return matchesSearch && matchesCategory && matchesStatus;

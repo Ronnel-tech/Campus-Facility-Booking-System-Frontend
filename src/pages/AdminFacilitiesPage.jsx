@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { displayName, toList } from '../lib/utils';
+import { displayName, searchableText, toList } from '../lib/utils';
 
 export default function AdminFacilitiesPage() {
   const navigate = useNavigate();
@@ -193,7 +193,7 @@ export default function AdminFacilitiesPage() {
   };
 
   const filteredFacilities = facilities.filter((f) => {
-    const matchesSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = searchableText(f.name).includes(searchableText(searchTerm));
     const matchesCategory = filterCategory === 'all' || String(f.category_id) === String(filterCategory);
     return matchesSearch && matchesCategory;
   });
