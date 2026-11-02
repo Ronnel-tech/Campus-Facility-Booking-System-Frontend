@@ -193,6 +193,7 @@ export default function AdminFacilitiesPage() {
   };
 
   const filteredFacilities = facilities.filter((f) => {
+    if (!f) return false;
     const matchesSearch = searchableText(f.name).includes(searchableText(searchTerm));
     const matchesCategory = filterCategory === 'all' || String(f.category_id) === String(filterCategory);
     return matchesSearch && matchesCategory;

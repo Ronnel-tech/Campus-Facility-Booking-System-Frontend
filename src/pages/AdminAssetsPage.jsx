@@ -201,6 +201,7 @@ export default function AdminAssetsPage() {
   };
 
   const filteredAssets = assets.filter((a) => {
+    if (!a) return false;
     const query = searchableText(searchTerm);
     const matchesSearch = searchableText(a.name).includes(query) ||
                          searchableText(a.asset_tag).includes(query);

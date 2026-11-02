@@ -175,7 +175,7 @@ export default function FacilityDetailsPage() {
               {facility.amenities.map((amenity, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-lg">
                   <span className="text-2xl">✓</span>
-                  <span className="text-neutral-700">{typeof amenity === 'string' ? amenity : amenity.name}</span>
+                  <span className="text-neutral-700">{displayName(amenity)}</span>
                 </div>
               ))}
             </div>
@@ -190,7 +190,7 @@ export default function FacilityDetailsPage() {
               {facility.rules.map((rule, idx) => (
                 <li key={idx} className="flex items-start gap-3">
                   <span className="text-primary-500 font-bold mt-1">•</span>
-                  <span className="text-neutral-600">{typeof rule === 'string' ? rule : rule.name}</span>
+                  <span className="text-neutral-600">{displayName(rule)}</span>
                 </li>
               ))}
             </ul>

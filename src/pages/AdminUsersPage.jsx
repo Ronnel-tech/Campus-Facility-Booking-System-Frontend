@@ -132,6 +132,7 @@ export default function AdminUsersPage() {
   };
 
   const filteredUsers = users.filter((u) => {
+    if (!u) return false;
     const query = searchableText(searchTerm);
     const matchesSearch = searchableText(u.name).includes(query) ||
                          searchableText(u.email).includes(query);
