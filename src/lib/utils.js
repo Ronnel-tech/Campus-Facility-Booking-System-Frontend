@@ -9,3 +9,20 @@ export function displayName(value) {
 
   return value?.name || "";
 }
+
+export function toList(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : value.trim() ? [value] : [];
+    } catch {
+      return value.trim() ? [value] : [];
+    }
+  }
+
+  return value == null ? [] : [value];
+}

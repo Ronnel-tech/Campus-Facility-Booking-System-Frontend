@@ -6,7 +6,7 @@ import Card from '../components/ui/Card';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import facilitiesService from '../services/facilitiesService';
-import { displayName } from '../lib/utils';
+import { displayName, toList } from '../lib/utils';
 
 export default function FacilityDetailsPage() {
   const { id } = useParams();
@@ -34,7 +34,12 @@ export default function FacilityDetailsPage() {
         setLoading(true);
         setError(null);
         const response = await facilitiesService.getById(id);
-        setFacility(response.data);
+        const facilityData = response.data;
+        setFacility({
+          ...facilityData,
+          amenities: toList(facilityData?.amenities),
+          rules: toList(facilityData?.rules),
+        });
       } catch (err) {
         if (err.status === 401) {
           navigate('/login');

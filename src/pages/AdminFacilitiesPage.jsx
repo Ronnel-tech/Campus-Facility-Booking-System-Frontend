@@ -7,7 +7,7 @@ import Input from '../components/ui/Input';
 import { useAuth } from '../hooks/useAuth';
 import { formatErrorMessage } from '../lib/validation';
 import apiService from '../services/apiService';
-import { displayName } from '../lib/utils';
+import { displayName, toList } from '../lib/utils';
 
 export default function AdminFacilitiesPage() {
   const navigate = useNavigate();
@@ -157,7 +157,7 @@ export default function AdminFacilitiesPage() {
       capacity: facility.capacity,
       location: facility.location,
       description: facility.description || '',
-      amenities: facility.amenities?.join(', ') || '',
+      amenities: toList(facility.amenities).join(', '),
       status: facility.status,
     });
     setEditingId(facility.id);
