@@ -16,6 +16,7 @@ import AdminDashboard from '../pages/AdminDashboard';
 import AdminFacilitiesPage from '../pages/AdminFacilitiesPage';
 import AdminAssetsPage from '../pages/AdminAssetsPage';
 import AdminReportsPage from '../pages/AdminReportsPage';
+import AdminReservationsPage from '../pages/AdminReservationsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
 import {
@@ -138,6 +139,10 @@ export const router = createBrowserRouter([
           {
             path: '/admin/reports',
             element: <AdminReportsPage />,
+          },
+          {
+            path: '/admin/reservations',
+            element: <AdminReservationsPage />,
           },
         ],
       },
