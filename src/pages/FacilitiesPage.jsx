@@ -35,9 +35,9 @@ export default function FacilitiesPage() {
           facilitiesService.getCategories(),
         ]);
 
-        setFacilities(facilitiesRes.data?.facilities || []);
-        if (categoriesRes.data?.categories) {
-          setCategories(['all', ...categoriesRes.data.categories]);
+        setFacilities(facilitiesRes.data || []);
+        if (Array.isArray(categoriesRes.data)) {
+          setCategories(['all', ...categoriesRes.data]);
         }
       } catch (err) {
         if (err.status === 401) {

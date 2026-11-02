@@ -41,9 +41,9 @@ export default function AssetCatalogPage() {
           assetsService.getCategories(),
         ]);
 
-        setAssets(assetsRes.data?.assets || []);
-        if (categoriesRes.data?.categories) {
-          setCategories(['all', ...categoriesRes.data.categories]);
+        setAssets(assetsRes.data || []);
+        if (Array.isArray(categoriesRes.data)) {
+          setCategories(['all', ...categoriesRes.data]);
         }
       } catch (err) {
         if (err.status === 401) {

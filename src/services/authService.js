@@ -169,6 +169,9 @@ const authService = {
       }
 
       apiService.setToken(authData.token);
+      if (authData.refresh_token) {
+        tokenStorage.set('refresh_token', authData.refresh_token);
+      }
       if (authData.user) {
         tokenStorage.set('user', JSON.stringify(authData.user));
       }
@@ -201,12 +204,14 @@ const authService = {
       // Clear local auth state
       apiService.clearAuthTokens();
       tokenStorage.remove('user');
+      tokenStorage.remove('refresh_token');
     }
   },
 
   clearAuthState: () => {
     apiService.clearAuthTokens();
     tokenStorage.remove('user');
+    tokenStorage.remove('refresh_token');
   },
 
   /**
@@ -215,16 +220,21 @@ const authService = {
    */
   refreshToken: async () => {
     try {
-      const response = await apiService.post('/auth/refresh', {});
+      const response = await apiService.post('/auth/refresh', {
+        refresh_token: tokenStorage.get('refresh_token'),
+      });
       const authData = response?.data?.token
         ? response.data
-        : response?.data?.data || response?.data || response;
-
-      if (!authData?.token) {
+        : response?.data?.data || response?.data?.tokens || response?.tokens || response?.data || response;
+      const accessToken = authData?.token || authData?.access_token;
+      if (!accessToken) {
         throw new AuthenticationError('No token received from server');
       }
 
-      apiService.setToken(authData.token);
+      apiService.setToken(accessToken);
+      if (authData.refresh_token) {
+        tokenStorage.set('refresh_token', authData.refresh_token);
+      }
 
       if (authData.user) {
         tokenStorage.set('user', JSON.stringify(authData.user));

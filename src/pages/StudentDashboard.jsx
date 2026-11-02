@@ -42,7 +42,7 @@ export default function StudentDashboard() {
 
         setUserProfile(profileRes.data || {});
         setReservations(reservationsRes.data || []);
-        setNotificationsCount(notificationsRes.data?.count || 0);
+        setNotificationsCount(notificationsRes.data?.unread_count || 0);
       } catch (err) {
         if (err.status === 401) {
           navigate('/login');

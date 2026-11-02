@@ -61,8 +61,8 @@ export default function NewReservationPage() {
           assetsService.getAll(1, 100),
         ]);
 
-        setFacilities(facilitiesRes.data?.facilities || []);
-        setAssets(assetsRes.data?.assets || []);
+        setFacilities(facilitiesRes.data || []);
+        setAssets(assetsRes.data || []);
       } catch (err) {
         if (err.status === 401) {
           navigate('/login');
@@ -156,20 +156,24 @@ export default function NewReservationPage() {
     try {
       setError(null);
 
+      const startDate = formData.type === 'facility'
+        ? `${formData.start_date} ${formData.start_time}:00`
+        : `${formData.start_date} 00:00:00`;
+      const endDate = formData.type === 'facility'
+        ? `${formData.start_date} ${formData.end_time}:00`
+        : `${formData.start_date} 23:59:59`;
       const payload = {
-        type: formData.type,
-        start_date: formData.start_date,
+        reservation_type: formData.type,
+        start_date: startDate,
+        end_date: endDate,
         purpose: formData.purpose,
-        notes: formData.notes,
       };
 
       if (formData.type === 'facility') {
         payload.facility_id = formData.facility_id;
-        payload.start_time = formData.start_time;
-        payload.end_time = formData.end_time;
         payload.attendee_count = parseInt(formData.attendee_count);
       } else {
-        payload.asset_id = formData.asset_id;
+        payload.assets = [{ asset_id: formData.asset_id, quantity: 1 }];
       }
 
       await reservationsService.create(payload);

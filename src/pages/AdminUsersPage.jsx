@@ -51,7 +51,7 @@ export default function AdminUsersPage() {
       setError(null);
 
       const res = await apiService.get('/admin/users');
-      setUsers(res.data?.users || []);
+      setUsers(res.data || []);
     } catch (err) {
       if (err.status === 401) {
         navigate('/login');
