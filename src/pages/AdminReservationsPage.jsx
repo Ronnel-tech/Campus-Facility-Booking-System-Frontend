@@ -23,7 +23,8 @@ export default function AdminReservationsPage() {
       setError(null);
       const query = status === 'all' ? '' : `&status=${status}`;
       const response = await apiService.get(`/admin/reservations?page=1&limit=100${query}`);
-      setReservations(Array.isArray(response.data) ? response.data : []);
+      const data = Array.isArray(response.data) ? response.data : response.data?.data;
+      setReservations(Array.isArray(data) ? data : []);
     } catch (err) {
       if (err.status === 401) navigate('/login');
       else if (err.status === 403) navigate('/unauthorized');
