@@ -274,6 +274,12 @@ export default function AdminAssetsPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-8 py-8">
+        {error && (
+          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-error">
+            {error}
+          </div>
+        )}
+
         {/* Add/Edit Asset Form */}
         {showForm && (
           <Card className="mb-8 border-2 border-primary-500">
