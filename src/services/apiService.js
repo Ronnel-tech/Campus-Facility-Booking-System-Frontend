@@ -246,6 +246,10 @@ const apiService = {
         );
       }
 
+      if (data === '' || data === null) {
+        return { status: 'success' };
+      }
+
       // Validate response structure
       if (data && typeof data === 'object') {
         return data;
