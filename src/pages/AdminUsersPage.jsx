@@ -52,7 +52,12 @@ export default function AdminUsersPage() {
       setError(null);
 
       const res = await apiService.get('/admin/users');
-      setUsers(res.data || []);
+      setUsers((res.data || []).filter(Boolean).map((user) => ({
+        ...user,
+        name: user.name || user.username || '',
+        status: user.status || (Number(user.is_active) === 1 ? 'active' : 'inactive'),
+        violations_count: user.violations_count ?? user.violations ?? 0,
+      })));
     } catch (err) {
       if (err.status === 401) {
         navigate('/login');
