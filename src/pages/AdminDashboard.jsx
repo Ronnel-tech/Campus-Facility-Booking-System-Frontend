@@ -77,7 +77,6 @@ export default function AdminDashboard() {
             <div className="flex gap-4">
               <Link to="/admin/facilities" className="text-neutral-600 hover:text-neutral-900">Facilities</Link>
               <Link to="/admin/assets" className="text-neutral-600 hover:text-neutral-900">Assets</Link>
-              <Link to="/admin/users" className="text-neutral-600 hover:text-neutral-900">Users</Link>
               <Link to="/admin/reports" className="text-neutral-600 hover:text-neutral-900">Reports</Link>
               <button onClick={handleLogout} className="text-neutral-600 hover:text-neutral-900">Logout</button>
             </div>
@@ -146,7 +145,6 @@ export default function AdminDashboard() {
           <div className="flex gap-4">
             <Link to="/admin/facilities" className="text-neutral-600 hover:text-neutral-900">Facilities</Link>
             <Link to="/admin/assets" className="text-neutral-600 hover:text-neutral-900">Assets</Link>
-            <Link to="/admin/users" className="text-neutral-600 hover:text-neutral-900">Users</Link>
             <Link to="/admin/reports" className="text-neutral-600 hover:text-neutral-900">Reports</Link>
             <button onClick={handleLogout} className="text-neutral-600 hover:text-neutral-900">Logout</button>
           </div>

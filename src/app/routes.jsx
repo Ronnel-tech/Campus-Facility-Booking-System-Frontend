@@ -15,7 +15,6 @@ import HelpPage from '../pages/HelpPage';
 import AdminDashboard from '../pages/AdminDashboard';
 import AdminFacilitiesPage from '../pages/AdminFacilitiesPage';
 import AdminAssetsPage from '../pages/AdminAssetsPage';
-import AdminUsersPage from '../pages/AdminUsersPage';
 import AdminReportsPage from '../pages/AdminReportsPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import UnauthorizedPage from '../pages/UnauthorizedPage';
@@ -135,10 +134,6 @@ export const router = createBrowserRouter([
           {
             path: '/admin/assets/:id',
             element: <AdminAssetsPage />,
-          },
-          {
-            path: '/admin/users',
-            element: <AdminUsersPage />,
           },
           {
             path: '/admin/reports',
