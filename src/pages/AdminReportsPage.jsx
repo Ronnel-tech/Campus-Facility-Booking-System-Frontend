@@ -26,6 +26,46 @@ export default function AdminReportsPage() {
     { id: 'cancellations', name: 'Cancellations', endpoint: 'cancellation-report' },
   ];
 
+  const getDateRange = (range) => {
+    const end = new Date();
+    const start = new Date(end);
+    const days = range === 'week' ? 7 : range === 'quarter' ? 90 : range === 'year' ? 365 : 30;
+    start.setDate(start.getDate() - days);
+    return {
+      startDate: start.toISOString().slice(0, 10),
+      endDate: end.toISOString().slice(0, 10),
+    };
+  };
+
+  const normalizeReport = (report, rawData) => {
+    if (Array.isArray(rawData)) {
+      return { data: rawData };
+    }
+
+    if (report === 'reservation-stats' && rawData?.stats) {
+      return {
+        summary: {
+          ...rawData.stats,
+          total: rawData.total,
+          approval_rate: rawData.approval_rate,
+        },
+        data: Object.entries(rawData.stats).map(([status, count]) => ({ status, count })),
+      };
+    }
+
+    if (report === 'maintenance-log' && rawData) {
+      return {
+        summary: rawData.stats || {},
+        data: rawData.records || [],
+      };
+    }
+
+    return {
+      summary: rawData?.summary,
+      data: Array.isArray(rawData?.data) ? rawData.data : [],
+    };
+  };
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate('/login');
@@ -44,8 +84,11 @@ export default function AdminReportsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await apiService.get(`/admin/reports/${activeReport}?range=${dateRange}`);
-      setReportData(res.data);
+      const { startDate, endDate } = getDateRange(dateRange);
+      const res = await apiService.get(
+        `/admin/reports/${activeReport}?start_date=${startDate}&end_date=${endDate}`
+      );
+      setReportData(normalizeReport(activeReport, res.data));
     } catch (err) {
       if (err.status === 401) navigate('/login');
       else if (err.status === 403) navigate('/unauthorized');
