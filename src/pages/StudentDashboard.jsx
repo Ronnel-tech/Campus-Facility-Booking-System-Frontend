@@ -41,7 +41,7 @@ export default function StudentDashboard() {
         ]);
 
         setUserProfile(profileRes.data || {});
-        setReservations(reservationsRes.data?.reservations || []);
+        setReservations(reservationsRes.data || []);
         setNotificationsCount(notificationsRes.data?.count || 0);
       } catch (err) {
         if (err.status === 401) {

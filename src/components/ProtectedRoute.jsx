@@ -34,7 +34,7 @@ export const RoleBasedRoute = ({ allowedRoles = [] }) => {
 export const DashboardRedirect = () => {
   const user = authService.getCurrentUser();
 
-  if (['admin', 'faculty', 'staff'].includes(user?.role)) {
+  if (user?.role === 'admin') {
     return <Navigate to="/admin" replace />;
   }
 
