@@ -208,7 +208,12 @@ const apiService = {
       if (contentType?.includes('application/json')) {
         data = await response.json();
       } else {
-        data = await response.text();
+        const text = await response.text();
+        try {
+          data = text ? JSON.parse(text) : text;
+        } catch {
+          data = text;
+        }
       }
 
       // Handle specific HTTP status codes
