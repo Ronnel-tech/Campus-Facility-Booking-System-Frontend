@@ -143,7 +143,7 @@ const apiService = {
   },
 
   // Request Headers with CSRF protection
-  getHeaders: () => {
+  getHeaders: (method = 'GET') => {
     const token = apiService.getToken();
     const headers = {
       'Content-Type': 'application/json',
@@ -152,6 +152,15 @@ const apiService = {
 
     if (token) {
       headers['Authorization'] = 'Bearer ' + token;
+    }
+
+    // CRITICAL FIX: Add CSRF token for state-changing requests
+    if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ||
+                        localStorage.getItem('csrf_token');
+      if (csrfToken) {
+        headers['X-CSRF-Token'] = csrfToken;
+      }
     }
 
     return headers;
@@ -182,9 +191,10 @@ const apiService = {
     }
 
     const url = `${API_BASE_URL}${endpoint}`;
+    const method = options.method || 'GET';
     const config = {
-      method: options.method || 'GET',
-      headers: { ...apiService.getHeaders(), ...options.headers },
+      method: method,
+      headers: { ...apiService.getHeaders(method), ...options.headers },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT),
     };
 

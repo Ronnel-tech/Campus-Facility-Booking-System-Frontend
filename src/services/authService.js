@@ -216,6 +216,7 @@ const authService = {
 
   /**
    * Refresh authentication token
+   * HIGH PRIORITY FIX #19: Frontend Token Refresh Error Recovery
    * @returns {Promise<Object>} New token data
    */
   refreshToken: async () => {
@@ -242,10 +243,36 @@ const authService = {
 
       return authData;
     } catch (error) {
-      // If refresh fails, clear auth and require re-login
+      // HIGH PRIORITY FIX #19: Catch token refresh errors and notify user
+      console.error('Token refresh failed:', error.message);
+      
+      // Clear auth state
       apiService.clearAuthTokens();
       tokenStorage.remove('user');
-      throw error;
+      tokenStorage.remove('refresh_token');
+
+      // Dispatch logout event for application-wide handling
+      window.dispatchEvent(new CustomEvent('auth:logout', {
+        detail: {
+          reason: 'session_expired',
+          message: 'Your session has expired. Please log in again.',
+        },
+      }));
+
+      // Show notification to user about session expiration
+      if (window.notificationService) {
+        window.notificationService.error(
+          'Session Expired',
+          'Your session has expired. Please log in again.'
+        );
+      }
+
+      // Redirect to login page
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login?redirected=true&reason=session_expired';
+      }
+
+      throw new AuthenticationError('Session expired. Please log in again.');
     }
   },
 

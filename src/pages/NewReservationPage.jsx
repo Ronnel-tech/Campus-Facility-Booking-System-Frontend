@@ -113,6 +113,11 @@ export default function NewReservationPage() {
         } else if (!validateTimeSlot(formData.end_time)) {
           errors.end_time = 'Invalid time format (HH:MM)';
         }
+        
+        // HIGH FIX #20: Validate end time is after start time on same day
+        if (formData.start_time && formData.end_time && formData.start_time >= formData.end_time) {
+          errors.end_time = 'End time must be after start time';
+        }
       }
     } else if (step === 4) {
       if (!formData.purpose) {

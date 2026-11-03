@@ -24,6 +24,8 @@ export default function AdminFacilitiesPage() {
     name: '',
     category: '',
     capacity: '',
+    booking_limit_hours: '4',
+    max_bookings_per_day: '2',
     location: '',
     description: '',
     amenities: '',
@@ -96,6 +98,12 @@ export default function AdminFacilitiesPage() {
     if (!formData.capacity || parseInt(formData.capacity) < 1) {
       errors.capacity = 'Valid capacity is required';
     }
+    if (!formData.booking_limit_hours || Number(formData.booking_limit_hours) < 0.25) {
+      errors.booking_limit_hours = 'Enter at least 0.25 hours';
+    }
+    if (!formData.max_bookings_per_day || parseInt(formData.max_bookings_per_day, 10) < 1) {
+      errors.max_bookings_per_day = 'Enter at least 1 booking per day';
+    }
     if (!formData.location.trim()) errors.location = 'Location is required';
 
     setFormErrors(errors);
@@ -112,6 +120,8 @@ export default function AdminFacilitiesPage() {
         name: formData.name.trim(),
         category_id: formData.category,
         capacity: parseInt(formData.capacity),
+        booking_limit_hours: Number(formData.booking_limit_hours),
+        max_bookings_per_day: parseInt(formData.max_bookings_per_day, 10),
         location: formData.location.trim(),
         description: formData.description.trim(),
         amenities: formData.amenities
@@ -132,6 +142,8 @@ export default function AdminFacilitiesPage() {
         name: '',
         category: '',
         capacity: '',
+        booking_limit_hours: '4',
+        max_bookings_per_day: '2',
         location: '',
         description: '',
         amenities: '',
@@ -155,6 +167,8 @@ export default function AdminFacilitiesPage() {
       name: facility.name,
       category: facility.category_id || facility.category?.id || '',
       capacity: facility.capacity,
+      booking_limit_hours: facility.booking_limit_hours || '4',
+      max_bookings_per_day: facility.max_bookings_per_day || '2',
       location: facility.location,
       description: facility.description || '',
       amenities: toList(facility.amenities).join(', '),
@@ -284,6 +298,29 @@ export default function AdminFacilitiesPage() {
                   error={formErrors.capacity}
                   required
                   min="1"
+                />
+                <Input
+                  label="Maximum Reservation Hours"
+                  type="number"
+                  name="booking_limit_hours"
+                  value={formData.booking_limit_hours}
+                  onChange={handleFormChange}
+                  error={formErrors.booking_limit_hours}
+                  required
+                  min="0.25"
+                  step="0.25"
+                  placeholder="e.g., 4"
+                />
+                <Input
+                  label="Maximum Bookings Per Day"
+                  type="number"
+                  name="max_bookings_per_day"
+                  value={formData.max_bookings_per_day}
+                  onChange={handleFormChange}
+                  error={formErrors.max_bookings_per_day}
+                  required
+                  min="1"
+                  placeholder="e.g., 2"
                 />
                 <Input
                   label="Location"
