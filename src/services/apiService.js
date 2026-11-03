@@ -262,10 +262,9 @@ const apiService = {
       }
 
       throw new APIError(
-        `Invalid response format from server: ${String(data || '(empty response)')}`,
+        'Invalid response format from server',
         500,
-        'INVALID_RESPONSE',
-        { rawResponse: data }
+        'INVALID_RESPONSE'
       );
     } catch (error) {
       if (error instanceof APIError) {
